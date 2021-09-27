@@ -1,0 +1,1469 @@
+from tkinter import *
+from tkinter import ttk
+from tkinter import messagebox
+from tkinter import Menu,Button,Tk,Toplevel
+from tkinter import font
+from tkinter.font import Font
+import matplotlib.pyplot as plt
+from math import  sin, sqrt
+import math
+from matplotlib import pyplot as plt
+from matplotlib.backends.backend_tkagg import FigureCanvasTkAgg
+from PIL import ImageTk,Image
+import numpy 
+from matplotlib.figure import Figure
+import matplotlib
+from numpy.lib.function_base import delete
+matplotlib.use("TkAgg")
+from matplotlib.backends.backend_tkagg import (FigureCanvasTkAgg, NavigationToolbar2Tk)
+
+
+
+class boiler_app(Tk):
+    def __init__(self,*args,**kwargs):
+       Tk.__init__(self,*args,**kwargs)
+       self.notebook = ttk.Notebook(self,height=1080,width=720)
+       self.title("Boiler application")
+       self.notebook.grid(row=1920,column=1080,padx=0,pady=0)
+       self.add_tab()
+       p1 = PhotoImage(file = "D:\copy\sdf.png")
+       self.iconphoto(True, p1)
+
+       #to create menu for the file
+       menubar = Menu(self)  
+       file = Menu(menubar, tearoff=0)  
+       file.add_command(label="New data analysis")  
+       file.add_command(label="Open")  
+       file.add_command(label="Save data as")  
+       file.add_command(label="Export data")  
+       file.add_command(label="Close")  
+       file.add_separator()  
+       file.add_command(label="Exit", command=self.quit)  
+       menubar.add_cascade(label="File", menu=file)  
+       edit = Menu(menubar, tearoff=0)  
+       edit.add_command(label="Save")  
+       edit.add_command(label="Clear all")  
+       menubar.add_cascade(label="Result", menu=edit)  
+       help = Menu(menubar, tearoff=0)  
+       help.add_command(label="About",command=self.about)  
+       menubar.add_cascade(label="Help", menu=help)  
+       edit = Menu(menubar, tearoff=0) 
+       edit.add_command(label="On alarm")  
+       edit.add_command(label="Off alarm")  
+       edit.add_command(label="Mute")  
+       menubar.add_cascade(label="Alarm", menu=edit)  
+       improve = Menu(menubar, tearoff=0) 
+       improve.add_command(label="Improve Method",command=self.steps)
+       menubar.add_cascade(label="Efficiency Improvement", menu=improve)
+       self.config(menu=menubar)  
+    def about(self):
+        messagebox.showinfo('Boiler Software','This software is used to analyze the performance of Fire Tube Boiler')
+    def steps(self):
+        messagebox.showinfo('Boiler Efficiency','If boiler efficiency <70%\n1) Install a high turndown burner\n2) Add variable speed drive controls\n3) Incorporate parallel positioning\n4) Include O2 trim\n5) Integrate lead/lag\n6) Incorporate an economizer\n7) Recover and repurpose heat from blow down\n8) Use exchangers to preheat inlet water ')
+
+    
+
+
+    def add_tab(self):
+        tab1 = Area(self.notebook)
+        tab2 = Volume(self.notebook) 
+        tab3 = Inertia(self.notebook)
+        tab4 = Velocity(self.notebook)
+        tab5 = Displacement(self.notebook)
+        tab6 = Thermo(self.notebook)
+        self.notebook.add(tab1,text="Start Page")
+        self.notebook.add(tab2,text="Solid,Liquid&Gas Fuel")
+        self.notebook.add(tab3,text='Fuel&Energy Savings')
+        self.notebook.add(tab4,text="Step Control")
+        self.notebook.add(tab5,text="Boiler Trend Plot")
+        self.notebook.add(tab6,text="Steam Analysis")
+
+
+        
+
+class Area(Frame):
+   def __init__(self,name,*args,**kwargs):
+       Frame.__init__(self,*args,**kwargs)
+       #self.configure(background="white")
+       self.name = name
+       Title1 = Label(self, text="Boiler Software",bd=12,relief=GROOVE,font=("Arial Black",20),bg="gray26",fg="white").pack(fill=X)      
+       details1=LabelFrame(self,text="About boiler",font=("Arial Black",12),bg="gray28",fg="white",relief=GROOVE,bd=10)
+       details1.place(x=0,y=80,relwidth=1,relheight=1)
+
+       details2=LabelFrame(details1,text="",font=("Arial Black",12),bg="gray28",fg="white",relief=GROOVE,bd=10)
+       details2.place(x=0,y=300,relwidth=1,relheight=0.34)
+
+       explanation0='''What is boiler?'''
+       explanation='''1.  A boiler is a closed vessel producing heat by the combustion of fuel'''
+       explanation1='''2. Heat is transferred to water for its conversion into steam at desired temperature and pressure.'''
+       explanation2='''Fire Tube boiler'''
+       explanation3='''1. Hot combustion gases flows through the tubes to heat water on the shell side of the boiler'''
+       explanation4='''2. Water begins to boil, steam is formed and moved along downstream'''
+       explanation5='''3. Cheapest type of boiler, as they have a fairly simple construction'''
+       explanation6='''4. They limited for low to medium pressure applications'''
+       explanation7='''Boiler Software is considered as an important application which used to evaluate the performance of a boiler either Fire/Water Tube Boiler.This is software was created to'''
+       explanation8='''evaluate the boiler efficiency by using Indirect Method by using a subtraction method (Heat Input-Heat Losses) in a boiler.This software can be used for Real Time Monitoring'''
+       explanation9='''with some modification for an actual system. This software can be used limitlessly to determine the boiler efficiency for various data fuel.This application is a user friendly where'''
+       explanation10='''the user can input the data in this software and obtain the graph in the form of Pie chart, Line graph or Bar Chart.There is also a page where energy saving method introduced '''
+       explanation11='''with certain efficiency improvement method stated when the boiler efficiency drops below 70.'''
+       explanation12='''This software was done to fulfill the requirement to Graduate as Mechanical Engineer'''
+       explanation13='''Done by Surendran Letchumanan\n Supervise by Dr Hayati Abdullah'''
+       label1=Label(details1,text=explanation0,font=("Arial Black",14),bg="gray28",fg="white")
+       label1.place(x=5,y=5)
+       label2=Label(details1,text=explanation,font=("Arial Black",14),bg="gray28",fg="white")
+       label2.place(x=5,y=35)
+       label3=Label(details1,text=explanation1,font=("Arial Black",14),bg="gray28",fg="white")
+       label3.place(x=5,y=65)
+       label4=Label(details1,text=explanation2,font=("Arial Black",14),bg="gray28",fg="white")
+       label4.place(x=5,y=105)
+       label5=Label(details1,text=explanation3,font=("Arial Black",14),bg="gray28",fg="white")
+       label5.place(x=5,y=135)
+       label6=Label(details1,text=explanation4,font=("Arial Black",14),bg="gray28",fg="white")
+       label6.place(x=5,y=165)
+       label7=Label(details1,text=explanation5,font=("Arial Black",14),bg="gray28",fg="white")
+       label7.place(x=5,y=195)
+       label7=Label(details1,text=explanation6,font=("Arial Black",14),bg="gray28",fg="white")
+       label7.place(x=5,y=225)
+       label12=Label(details2,text=explanation7,font=("Arial Black",14),bg="gray28",fg="white")
+       label12.place(x=5,y=5)
+       label13=Label(details2,text=explanation8,font=("Arial Black",14),bg="gray28",fg="white")
+       label13.place(x=5,y=35)
+       label14=Label(details2,text=explanation9,font=("Arial Black",14),bg="gray28",fg="white")
+       label14.place(x=5,y=65)
+       label15=Label(details2,text=explanation10,font=("Arial Black",14),bg="gray28",fg="white")
+       label15.place(x=5,y=95)
+       label16=Label(details2,text=explanation11,font=("Arial Black",14),bg="gray28",fg="white")
+       label16.place(x=5,y=125)
+       label17=Label(details2,text=explanation12,font=("Arial Black",14),bg="gray28",fg="white")
+       label17.place(x=5,y=200)
+       label18=Label(details2,text=explanation13,font=("Arial Black",14),bg="gray28",fg="white")
+       label18.place(x=1500,y=260)
+
+
+
+class Volume(Frame):
+   def __init__(self,name,*args,**kwargs):
+       Frame.__init__(self,*args,**kwargs)
+       self.name = name
+       #variable to determine the loss through indirect method
+       self.radio=IntVar()
+       self.temperaturesteam=DoubleVar()
+       self.flowratesteam=DoubleVar()
+       self.pressuresteam=DoubleVar()
+       self.temperaturesteam1=DoubleVar()
+       self.flowratesteam1=DoubleVar()
+       self.pressuresteam1=DoubleVar()
+       self.temperaturesteam2=DoubleVar()
+       self.flowratesteam2=DoubleVar()
+       self.pressuresteam2=DoubleVar()
+       self.NCV=DoubleVar()
+       self.totalsurface=DoubleVar()
+       self.ratiofly=DoubleVar()
+       self.ratiobottom=DoubleVar()
+       self.carbon=DoubleVar()
+       self.nitrogen=DoubleVar()
+       self.oxygen=DoubleVar()
+       self.hydrogen=DoubleVar()
+       self.GCVfuel=DoubleVar()
+       self.ASHfuel=DoubleVar()
+       self.moisture=DoubleVar()
+       self.sulphur=DoubleVar()
+       self.GCVfly=DoubleVar()
+       self.GCVbottom=DoubleVar()
+       self.WINDvelocity=DoubleVar()
+       self.COflue=DoubleVar()
+       self.CO2flue=DoubleVar()
+       self.Fuel_firing=DoubleVar()
+       self.AVG_flue_temp=DoubleVar()
+       self.ambient_temp=DoubleVar()
+       self.humidity_ambient=DoubleVar()
+       self.surface_temp=DoubleVar()
+       self.ratio_b_f=DoubleVar()
+       self.steam_generation=DoubleVar()
+       self.steam_pressure = DoubleVar()
+       self.total_boil_loss=StringVar()
+       self.total_loss1=StringVar()
+       self.total_efficiency=StringVar()
+       self.boiler_info=StringVar()
+       self.boiler_no=StringVar()
+       self.file_no=StringVar()
+       self.fuelname=StringVar()
+
+
+#==========================================boiler details label frame=================================================
+       Title = Label(self, text="Solid,Liquid & Gas Analysis",bd=12,relief=GROOVE,font=("Arial Black",20),bg="gray26",fg="white").pack(fill=X)      
+       
+       details=LabelFrame(self,text="Boiler No",font=("Arial Black",12),bg="gray28",fg="white",relief=GROOVE,bd=10)
+       details.place(x=0,y=80,relwidth=1)
+
+       boiler_name=Label(details,text="Boiler Info",font=("Arial Black",14),bg="gray30",fg="white").grid(row=0,column=0,padx=15)
+       boiler_entry=Entry(details,borderwidth=4,width=30,textvariable=self.boiler_info).grid(row=0,column=1,padx=8)
+        
+       file_name=Label(details,text="File No.",font=("Arial Black",14),bg="gray30",fg="white").grid(row=0,column=2,padx=10)
+       file_entry=Entry(details,borderwidth=4,width=30,textvariable=self.file_no).grid(row=0,column=3,padx=8)
+        
+       boil_name=Label(details,text="Boiler Load",font=("Arial Black",14),bg="gray30",fg="white").grid(row=0,column=4,padx=10)
+       boil_entry=Entry(details,borderwidth=4,width=30,textvariable=self.boiler_no).grid(row=0,column=5,padx=8)
+
+       fuel_name=Label(details,text="Fuel Name",font=("Arial Black",14),bg="gray30",fg="white").grid(row=0,column=6,padx=10)
+       fuel_entry=Entry(details,borderwidth=4,width=30,textvariable=self.fuelname).grid(row=0,column=7,padx=8)
+        #=======================================variable=================================================================
+       boiler=LabelFrame(self,text="Ultimate Analysis",font=("Arial Black",13),bg="gray22",fg="white",relief=GROOVE,bd=10)
+       boiler.place(x=5,y=180,height=380,width=325)
+        
+       item1=Label(boiler,text="Carbon",font=("Arial Black",11),bg="gray22",fg="white").grid(row=0,column=0,pady=11)
+       item1_entry=Entry(boiler,borderwidth=2,width=15,textvariable=self.carbon).grid(row=0,column=1,padx=10)
+
+       item2=Label(boiler,text="Moisture",font=("Arial Black",11),bg="gray22",fg="white").grid(row=1,column=0,pady=11)
+       item2_entry=Entry(boiler,borderwidth=2,width=15,textvariable=self.moisture).grid(row=1,column=1,padx=10)
+
+       item3=Label(boiler,text="Ash",font=("Arial Black",11),bg="gray22",fg="white").grid(row=2,column=0,pady=11)
+       item3_entry=Entry(boiler,borderwidth=2,width=15,textvariable=self.ASHfuel).grid(row=2,column=1,padx=10)
+
+       item4=Label(boiler,text="Hydrogen",font=("Arial Black",11),bg="gray22",fg="white").grid(row=3,column=0,pady=11)
+       item4_entry=Entry(boiler,borderwidth=2,width=15,textvariable=self.hydrogen).grid(row=3,column=1,padx=10)
+
+       item5=Label(boiler,text="Nitrogen",font=("Arial Black",11),bg="gray22",fg="white").grid(row=4,column=0,pady=11)
+       item5_entry=Entry(boiler,borderwidth=2,width=15,textvariable=self.nitrogen).grid(row=4,column=1,padx=10)
+
+       item6=Label(boiler,text="Oxygen",font=("Arial Black",11),bg="gray22",fg="white").grid(row=5,column=0,pady=11)
+       item6_entry=Entry(boiler,borderwidth=2,width=15,textvariable=self.oxygen).grid(row=5,column=1,padx=10)
+
+       item7=Label(boiler,text="Sulphur",font=("Arial Black",11),bg="gray22",fg="white").grid(row=6,column=0,pady=11)
+       item7_entry=Entry(boiler,borderwidth=2,width=15,textvariable=self.sulphur).grid(row=6,column=1,padx=10)
+        #===================================variable 1=====================================================================================
+       boiler1=LabelFrame(self,text="",font=("Arial Black",12),relief=GROOVE,bd=10,bg='gray22',fg="#6C3483")
+       boiler1.place(x=340,y=180,height=380,width=325)
+       P='gray22'
+       W='white'
+
+       item8=Label(boiler1,text="Fuel firing",font=("Arial Black",11),bg=P,fg="white").grid(row=0,column=0,pady=11)
+       item8_entry=Entry(boiler1,borderwidth=2,width=15,textvariable=self.Fuel_firing).grid(row=0,column=1,padx=10)
+
+       item9=Label(boiler1,text="CO2 in flue",font=("Arial Black",11),bg=P,fg="white").grid(row=1,column=0,pady=11)
+       item9_entry=Entry(boiler1,borderwidth=2,width=15,textvariable=self.CO2flue).grid(row=1,column=1,padx=10)
+
+       item10=Label(boiler1,text="CO in flue",font=("Arial Black",11),bg=P,fg="white").grid(row=2,column=0,pady=11)
+       item10_entry=Entry(boiler1,borderwidth=2,width=15,textvariable=self.COflue).grid(row=2,column=1,padx=10)
+
+       item11=Label(boiler1,text="Average Flue Temp",font=("Arial Black",11),bg=P,fg="white").grid(row=3,column=0,pady=11)
+       item11_entry=Entry(boiler1,borderwidth=2,width=15,textvariable=self.AVG_flue_temp).grid(row=3,column=1,padx=10)
+
+       item12=Label(boiler1,text="Ambient Temp",font=("Arial Black",11),bg=P,fg="white").grid(row=4,column=0,pady=11)
+       item12_entry=Entry(boiler1,borderwidth=2,width=15,textvariable=self.ambient_temp).grid(row=4,column=1,padx=10)
+
+       item13=Label(boiler1,text="Wind Velocity",font=("Arial Black",11),bg=P,fg="white").grid(row=5,column=0,pady=11)
+       item13_entry=Entry(boiler1,borderwidth=2,width=15,textvariable=self.WINDvelocity).grid(row=5,column=1,padx=10)
+
+       item14=Label(boiler1,text="NCV of Fuel",font=("Arial Black",11),bg=P,fg="white").grid(row=6,column=0,pady=11)
+       item14_entry=Entry(boiler1,borderwidth=2,width=15,textvariable=self.NCV).grid(row=6,column=1,padx=10)
+        #========================================Variable 3===============================================================================
+       boiler3=LabelFrame(self,text="",font=("Arial Black",12),relief=GROOVE,bd=10,bg=P,fg=W)
+       boiler3.place(x=677,y=180,height=380,width=325)
+
+       item15=Label(boiler3,text="GCV Bottom",font=("Arial Black",11),bg=P,fg=W).grid(row=0,column=0,pady=11)
+       item15_entry=Entry(boiler3,borderwidth=2,width=15,textvariable=self.GCVbottom).grid(row=0,column=1,padx=10)
+
+       item16=Label(boiler3,text="GCV Fly",font=("Arial Black",11),bg=P,fg=W).grid(row=1,column=0,pady=11)
+       item16_entry=Entry(boiler3,borderwidth=2,width=15,textvariable=self.GCVfly).grid(row=1,column=1,padx=10)
+
+       item17=Label(boiler3,text="Humidity ambient",font=("Arial Black",11),bg=P,fg=W).grid(row=2,column=0,pady=11)
+       item17_entry=Entry(boiler3,borderwidth=2,width=15,textvariable=self.humidity_ambient).grid(row=2,column=1,padx=10)
+
+       item18=Label(boiler3,text="Surface temp",font=("Arial Black",11),bg=P,fg=W).grid(row=3,column=0,pady=11)
+       item18_entry=Entry(boiler3,borderwidth=2,width=15,textvariable=self.surface_temp).grid(row=3,column=1,padx=10)
+
+       item19=Label(boiler3,text="GCV of fuel",font=("Arial Black",11),bg=P,fg=W).grid(row=4,column=0,pady=11)
+       item19_entry=Entry(boiler3,borderwidth=2,width=15,textvariable=self.GCVfuel).grid(row=4,column=1,padx=10)
+
+       item20=Label(boiler3,text="Steam Generation",font=("Arial Black",11),bg=P,fg=W).grid(row=5,column=0,pady=11)
+       item20_entry=Entry(boiler3,borderwidth=2,width=15,textvariable=self.steam_generation).grid(row=5,column=1,padx=10)
+
+       item21=Label(boiler3,text="Steam Pressure",font=("Arial Black",11),bg=P,fg=W).grid(row=6,column=0,pady=11)
+       item21_entry=Entry(boiler3,borderwidth=2,width=15,textvariable=self.steam_pressure).grid(row=6,column=1,padx=10)
+       #==================================================================================================
+       boiler4=LabelFrame(self,text="",font=("Arial Black",12),relief=GROOVE,bd=10,bg=P,fg=W)
+       boiler4.place(x=1012,y=180,height=380,width=325)
+
+       item22=Label(boiler4,text="Ratio Fly Ash",font=("Arial Black",11),bg=P,fg=W).grid(row=0,column=0,pady=11)
+       item22_entry=Entry(boiler4,borderwidth=2,width=15,textvariable=self.ratiofly).grid(row=0,column=1,padx=10)
+
+       item23=Label(boiler4,text="Ratio Bottom Ash",font=("Arial Black",11),bg=P,fg=W).grid(row=1,column=0,pady=11)
+       item23_entry=Entry(boiler4,borderwidth=2,width=15,textvariable=self.ratiobottom).grid(row=1,column=1,padx=10)
+
+       item24=Label(boiler4,text="Surface Area",font=("Arial Black",11),bg=P,fg=W).grid(row=2,column=0,pady=11)
+       item24_entry=Entry(boiler4,borderwidth=2,width=15,textvariable=self.totalsurface).grid(row=2,column=1,padx=10)
+       #===================================================================================================
+       boiler5=LabelFrame(self,text="Steam Enter",font=("Arial Black",12),relief=GROOVE,bd=10,bg=P,fg=W)
+       boiler5.place(x=5,y=570,height=300,width=325)
+
+       item25=Label(boiler5,text="Temperature|℃",font=("Arial Black",11),bg=P,fg=W).grid(row=0,column=0,pady=11)
+       item25_entry=Entry(boiler5,borderwidth=2,width=15,textvariable=self.temperaturesteam).grid(row=0,column=1,padx=10)
+
+       item26=Label(boiler5,text="Flowrate|kg/hr",font=("Arial Black",11),bg=P,fg=W).grid(row=1,column=0,pady=11)
+       item26_entry=Entry(boiler5,borderwidth=2,width=15,textvariable=self.flowratesteam).grid(row=1,column=1,padx=10)
+
+       item27=Label(boiler5,text="Pressure|Bar",font=("Arial Black",11),bg=P,fg=W).grid(row=2,column=0,pady=11)
+       item27_entry=Entry(boiler5,borderwidth=2,width=15,textvariable=self.pressuresteam).grid(row=2,column=1,padx=10)
+       #====================================================================================================
+       boiler6=LabelFrame(self,text="Steam Leave",font=("Arial Black",12),relief=GROOVE,bd=10,bg=P,fg=W)
+       boiler6.place(x=340,y=570,height=300,width=325)
+
+       item28=Label(boiler6,text="Temperature|℃",font=("Arial Black",11),bg=P,fg=W).grid(row=0,column=0,pady=11)
+       item28_entry=Entry(boiler6,borderwidth=2,width=15,textvariable=self.temperaturesteam1).grid(row=0,column=1,padx=10)
+
+       item29=Label(boiler6,text="Flowrate|kg/hr",font=("Arial Black",11),bg=P,fg=W).grid(row=1,column=0,pady=11)
+       item29_entry=Entry(boiler6,borderwidth=2,width=15,textvariable=self.flowratesteam1).grid(row=1,column=1,padx=10)
+
+       item30=Label(boiler6,text="Pressure|Bar",font=("Arial Black",11),bg=P,fg=W).grid(row=2,column=0,pady=11)
+       item30_entry=Entry(boiler6,borderwidth=2,width=15,textvariable=self.pressuresteam1).grid(row=2,column=1,padx=10)
+
+       boiler8=LabelFrame(self,text="Water Flow",font=("Arial Black",12),relief=GROOVE,bd=10,bg=P,fg=W)
+       boiler8.place(x=675,y=570,height=300,width=325)
+
+       item31=Label(boiler8,text="Temperature|℃",font=("Arial Black",11),bg=P,fg=W).grid(row=0,column=0,pady=11)
+       item31_entry=Entry(boiler8,borderwidth=2,width=15,textvariable=self.temperaturesteam2).grid(row=0,column=1,padx=10)
+
+       item32=Label(boiler8,text="Flowrate|kg/hr",font=("Arial Black",11),bg=P,fg=W).grid(row=1,column=0,pady=11)
+       item32_entry=Entry(boiler8,borderwidth=2,width=15,textvariable=self.flowratesteam2).grid(row=1,column=1,padx=10)
+
+       item33=Label(boiler8,text="Pressure|Bar",font=("Arial Black",11),bg=P,fg=W).grid(row=2,column=0,pady=11)
+       item33_entry=Entry(boiler8,borderwidth=2,width=15,textvariable=self.pressuresteam2).grid(row=2,column=1,padx=10)
+
+       boiler47=LabelFrame(boiler8,font=("Arial Black",12),relief=GROOVE,bd=10,bg=P,fg=W)
+       boiler47.place(x=80,y=180,height=70,width=130)
+
+       Button(boiler47,text="On",font=("Arial Black",15),pady=1,bg="gray8",fg="white",command=0).grid(row=3,column=0,padx=1)
+       Button(boiler47,text="Off",font=("Arial Black",15),pady=1,bg="gray8",fg="white",command=0).grid(row=3,column=1,padx=1)
+
+       boiler7=LabelFrame(self,text="Preheating",font=("Arial Black",12),relief=GROOVE,bd=10,bg=P,fg=W)
+       boiler7.place(x=1010,y=570,height=300,width=325)
+
+       boilera1=LabelFrame(boiler7,text="",font=("Arial Black",12),relief=GROOVE,bd=10,bg=P,fg=W)
+       boilera1.place(x=0,y=0,height=60,width=300)
+       boilera2=LabelFrame(boiler7,text="",font=("Arial Black",12),relief=GROOVE,bd=10,bg=P,fg=W)
+       boilera2.place(x=0,y=80,height=60,width=300)
+       boilera3=LabelFrame(boiler7,text="",font=("Arial Black",12),relief=GROOVE,bd=10,bg=P,fg=W)
+       boilera3.place(x=0,y=160,height=60,width=300)
+
+       Radiobutton(boilera1,text='Preheating of Combustion Air',font=("Arial Black",11),bg='white',fg='black',variable=self.radio,value=1).grid(row=15,column=0,)
+       Radiobutton(boilera2,text='Preheating of Air-Fuel Mixture',font=("Arial Black",11),bg='white',fg='black',variable=self.radio,value=2).grid(row=30,column=0,)
+       Radiobutton(boilera3,text='Preheating of fuel from steam',font=("Arial Black",11),bg='white',fg='black',variable=self.radio,value=3).grid(row=45,column=0,)
+
+        #=====================================================billarea==============================================================================
+       boilerarea=Frame(self,bd=10,relief=GROOVE,bg="gray8")
+       boilerarea.place(x=1350,y=180,width=550,height=690)
+       
+       bill_title=Label(boilerarea,text="Boiler Area",font=("Arial Black",17),bd=7,relief=GROOVE,bg="gray8",fg="white").pack(fill=X)
+        
+       scrol_y=Scrollbar(boilerarea,orient=VERTICAL)
+       self.txtarea=Text(boilerarea,yscrollcommand=scrol_y.set)
+       scrol_y.pack(side=RIGHT,fill=Y)
+       scrol_y.config(command=self.txtarea.yview)
+       self.txtarea.pack(fill=BOTH,expand=1)
+       #=================================================billing menu=========================================================================================
+       boiler1_menu=LabelFrame(self,text="Fire Tube Boiler Losses",font=("Arial Black",12),relief=GROOVE,bd=10,bg="gray8",fg="white")
+       boiler1_menu.place(x=0,y=880,relwidth=1,height=137)
+        
+       total_loss=Label(boiler1_menu,text="Total Boiler Loss",font=("Arial Black",11),bg="gray8",fg="white").grid(row=0,column=0)
+       total_loss_entry=Entry(boiler1_menu,width=30,borderwidth=2,textvariable=self.total_loss1).grid(row=0,column=1,padx=10,pady=7)
+
+       total_efficiency = Label(boiler1_menu,text="Total Efficiency",font=("Arial Black",11),bg="gray8",fg="white").grid(row=1,column=0)
+       total_efficiency=Entry(boiler1_menu,width=30,borderwidth=2,textvariable=self.total_efficiency).grid(row=1,column=1,padx=10,pady=7)
+
+       button_frame=Frame(boiler1_menu,bd=7,relief=GROOVE,bg="gray8")
+       button_frame.place(x=830,width=500,height=95)
+       
+       button_total=Button(button_frame,text="Total Losses",font=("Arial Black",15),pady=10,bg="gray8",fg="white",command=lambda:total(self)).grid(row=0,column=0,padx=12)
+       button_clear=Button(button_frame,text="Clear Field",font=("Arial Black",15),pady=10,bg="gray8",fg="white",command=lambda:clear(self)).grid(row=0,column=1,padx=10,pady=6)
+       intro(self)
+
+
+def total(self,*args,**kwargs):
+    if (self.boiler_info.get=="" or self.file_no.get()==""):
+        messagebox.showerror("Error", "Fill the Details!!!!!!")
+    #======================S1/S5=================#
+    #1
+    self.theo_com_combustion = ((11.6*self.carbon.get()) + (34.8*(self.hydrogen.get()-(self.oxygen.get()/8))) + (4.35*self.sulphur.get()))*0.01
+    #2
+    mol_C = (self.carbon.get()*0.01)/12
+    mol_N2a = (self.theo_com_combustion*(77/100))/28
+    mol_N2b = (self.nitrogen.get()*0.01)/28
+    mol_N2 = (mol_N2a+mol_N2b)
+    self.theo_Co2t = (mol_C/(mol_C+mol_N2))*100
+    #3
+    var1 = (7900*(self.theo_Co2t-self.CO2flue.get()))
+    var2 = (self.CO2flue.get()*(100-self.theo_Co2t))
+    self.excess_air = (var1/var2)
+    var3 = self.excess_air / 100
+    self.actual_mass = (1+var3)*self.theo_com_combustion
+    #5
+    var4 = ((self.carbon.get()*0.01*44)/12)
+    var5 = (self.nitrogen.get()*0.01)
+    var6 = (self.actual_mass*77*0.01)
+    var7 = (self.actual_mass - self.theo_com_combustion)*23*0.01
+    self.dry_flue = var4 + var5 + var6 + var7 
+
+    self.L1 = (self.dry_flue*0.23*100*(self.AVG_flue_temp.get()-self.ambient_temp.get())) / self.GCVfuel.get()
+    self.L2 = ((5256*self.hydrogen.get()) + (9*self.hydrogen.get()*(self.AVG_flue_temp.get()-self.ambient_temp.get())*0.45)) / self.GCVfuel.get()
+    self.L3 = ((584*self.moisture.get()) + (self.moisture.get()*0.45*(self.AVG_flue_temp.get()-self.ambient_temp.get()))) / self.GCVfuel.get()
+    self.L4 = (self.actual_mass * self.humidity_ambient.get() * 0.45 * (self.AVG_flue_temp.get()-self.ambient_temp.get()) * 100) / self.GCVfuel.get()
+    e = self.carbon.get() /100
+    self.L5 = ((self.COflue.get()*e) / (self.COflue.get()+self.CO2flue.get())) * (574400/self.GCVfuel.get())
+    a= 196.85*self.WINDvelocity.get()
+    b= 68.9
+    b1= self.surface_temp.get()+ 273
+    b2= self.ambient_temp.get() + 273
+    c= pow((b1/55.55),4) - pow((b2/55.55),4)
+    d= pow((b1-b2),1.25)
+    L6a = (0.548*c)+(1.957*d*sqrt((a+b)/b))
+    #z1=self.totalsurface.get()
+    self.L6 = ((L6a * 0.86 * 90) *100) / (self.GCVfuel.get()*self.Fuel_firing.get())
+    as1=(self.ratiofly.get())/100
+    as2=(self.ratiobottom.get())/100
+    self.L7 = (as1*self.ASHfuel.get()*self.GCVfly.get())/self.GCVfuel.get()
+    self.L8 = (as2*self.ASHfuel.get()*self.GCVbottom.get())/self.GCVfuel.get()
+
+
+
+
+    total_loss_boiler =(
+        self.L1+
+        self.L2+
+        self.L3+
+        self.L4+
+        self.L5+
+        self.L6+
+        self.L7+
+        self.L8 
+    )
+
+    self.total_loss1.set(str(total_loss_boiler)+" %")
+
+    total_efficiency1 = (
+        100 - (
+        self.L1+
+        self.L2+
+        self.L3+
+        self.L4+
+        self.L5+
+        self.L6+
+        self.L7+
+        self.L8)
+        )
+    
+    self.total_efficiency.set(str(total_efficiency1)+" %")
+    boilerarea(self)
+
+
+
+    
+def intro(self):
+    self.txtarea.delete(1.0,END)
+    self.txtarea.insert(END,"\t\t|WELCOME BOILER SOFTWARE|\n\t\t|Fire Tube Boiler|\n\t\t|By Surendran Letchumanan|")
+    self.txtarea.insert(END,f"\nBoiler Num/Type : {self.boiler_info.get()}")
+    self.txtarea.insert(END,f"\nBoiler Load : {self.boiler_no.get()}")
+    self.txtarea.insert(END,f"\nFile No : {self.file_no.get()}")
+    self.txtarea.insert(END,f"\nFuel Name : {self.fuelname.get()}")
+    self.txtarea.insert(END,"\n=================================================\n")
+    self.txtarea.insert(END,"\nLosses |Type|\t\t\t\t\t\tValue\n")
+    self.txtarea.insert(END,"\n=================================================\n")
+
+def boilerarea(self):
+    intro(self)
+    self.txtarea.insert(END,f"L1 |Heat loss due to dry flue gas|\t\t\t\t\t{self.L1}\n")
+    self.txtarea.insert(END,f"L2 |Heat loss due to evaporation H2 in fuel|\t{self.L2}\n") 
+    self.txtarea.insert(END,f"L3 |Heat loss due to moisture present in fuel|\t{self.L3}\n") 
+    self.txtarea.insert(END,f"L4 |Heat loss due to moisture present in air|\t\t{self.L4}\n") 
+    self.txtarea.insert(END,f"L5 |Heat loss due to incomplete combustion|\t\t{self.L5}\n")    
+    self.txtarea.insert(END,f"L6 |Heat loss due to radiation and convection|\t{self.L6}\n") 
+    self.txtarea.insert(END,f"L7 |Heat loss due to unburnt in fly ash|\t\t\t\t{self.L7}\n") 
+    self.txtarea.insert(END,f"L8 |Heat loss due to unburnt in bottom ash|\t\t{self.L8}\n") 
+    self.txtarea.insert(END,f"---------------------------------------------------------\n")
+    self.txtarea.insert(END,f"Theoretical air requirement:\t\t{self.theo_com_combustion}\n") 
+    self.txtarea.insert(END,f"Theoretical CO2%:\t\t{self.theo_Co2t}\n") 
+    self.txtarea.insert(END,f"Excess air supplied:\t\t{self.excess_air}\n") 
+    self.txtarea.insert(END,f"Actual mass of air supplied:\t\t{self.actual_mass}\n") 
+    self.txtarea.insert(END,f"Actual mass of dry flue gas:\t\t{self.dry_flue}\n") 
+
+def clear(self):
+    self.txtarea.delete(1.0,END)
+    self.carbon.set(0.0)
+    self.nitrogen.set(0.0)
+    self.oxygen.set(0.0)
+    self.hydrogen.set(0.0)
+    self.GCVfuel.set(0.0)
+    self.ASHfuel.set(0.0)
+    self.moisture.set(0.0)
+    self.GCVfly.set(0.0)
+    self.GCVbottom.set(0.0)
+    self.WINDvelocity.set(0.0)
+    self.COflue.set(0.0)
+    self.CO2flue.set(0.0)
+    self.Fuel_firing.set(0.0)
+    self.AVG_flue_temp.set(0.0)
+    self.ambient_temp.set(0.0)
+    self.humidity_ambient.set(0.0)
+    self.surface_temp.set(0.0)
+    self.ratio_b_f.set(0.0)
+    self.steam_generation.set(0.0)
+    self.steam_pressure.set(0.0)
+    self.boiler_no.set(0)
+    self.file_no.set(0)
+    self.boiler_info.set(0)
+    self.total_efficiency.set(0)
+    self.total_loss1.set(0)
+
+
+
+class Displacement(Frame):
+   def __init__(self,*args,**kwargs):
+       Frame.__init__(self,*args,**kwargs)
+       Title = Label(self,text="Graph Plotting",bd=12,relief=GROOVE,font=("Arial Black",20),bg="gray26",fg="white").pack(fill=X) 
+       Loads=LabelFrame(self,text="Graph Details",font=("Arial Black",13),bg="gray22",fg="white",relief=GROOVE,bd=10)
+       Loads.place(x=0,y=70,relwidth=1,relheight=0.87)
+
+
+
+       e_1=StringVar()
+       e_2=StringVar()
+       e_3=StringVar()
+       e_4=StringVar()
+       e_5=StringVar()
+       e_6=StringVar()
+       e_7=StringVar()
+
+       load_1a=DoubleVar()
+       load_1b=DoubleVar()
+       load_1c=DoubleVar()
+       load_1d=DoubleVar()
+       load_1e=DoubleVar()
+       load_1f=DoubleVar()
+       load_1g=DoubleVar()
+       ch=IntVar()
+       Graph_title=StringVar()
+
+       def apple():
+            if (e_1.get=="" or e_2.get()==""):
+                       messagebox.showerror("Error", "Please fill in the entry field to proceed with graph")
+            a1=e_1.get()
+            a2=e_2.get()
+            a3=e_3.get()
+            a4=e_4.get()
+            a5=e_5.get()
+            a6=e_6.get()
+            a7=e_7.get()
+            diff_loads=[a1,a2,a3,a4]
+            Top=Graph_title.get()
+            a=load_1a.get()
+            b=load_1b.get()
+            c=load_1c.get()
+            d=load_1d.get()
+            e=load_1e.get()
+            f=load_1f.get()
+            g=load_1g.get()
+            choice=ch.get()
+            title=Graph_title.get()
+            eff_loads=[a,b,c,d]
+            col=['green','blue','violet','yellow','black','red']
+            plt.title(title)
+            if choice==1:#bargraph
+                 plt.bar(diff_loads,eff_loads)
+                 plt.xlabel('Improvement Parameter')
+                 plt.ylabel('Boiler efficiency, %')
+            elif choice==2:#piechart
+                 plt.pie(diff_loads,labels=eff_loads,colors=col,shadow=True,startangle=140)
+            elif choice==3:#line
+                 plt.plot(diff_loads,eff_loads, color='red', marker='o')
+                 plt.xlabel('x')
+                 plt.ylabel('y')
+            else:
+                 return messagebox.showerror('Error','Enter Type of Graph')
+            plt.show()
+    
+       Frame1=LabelFrame(Loads,text="Plotting of Boiler Efficiency",font=("Arial Black",13),bg="gray22",fg="white",relief=GROOVE,bd=10)
+       Frame1.place(x=5,y=10,height=450,width=700)
+
+       main=Label(Frame1,text="Graph Title ",font=("Arial Black",11),bg="gray22",fg="white").grid(row=0,column=0,pady=11)
+       main_entry= Entry(Frame1,borderwidth=2,width=15,textvariable=Graph_title).grid(row=0,column=1,padx=10)
+
+       load1=Label(Frame1,text="Boiler Efficiency",font=("Arial Black",11),bg="gray22",fg="white").grid(row=1,column=0,pady=11)
+       load1_entry=Entry(Frame1,borderwidth=2,width=15,textvariable=load_1a).grid(row=1,column=1,padx=10)
+
+       load2=Label(Frame1,text="Boiler Efficiency",font=("Arial Black",11),bg="gray22",fg="white").grid(row=2,column=0,pady=11)
+       load2_entry=Entry(Frame1,borderwidth=2,width=15,textvariable=load_1b).grid(row=2,column=1,padx=10)
+
+       load3=Label(Frame1,text="Boiler Efficiency",font=("Arial Black",11),bg="gray22",fg="white").grid(row=3,column=0,pady=11)
+       load3_entry=Entry(Frame1,borderwidth=2,width=15,textvariable=load_1c).grid(row=3,column=1,padx=10)
+       
+       load4=Label(Frame1,text="Boiler Efficiency",font=("Arial Black",11),bg="gray22",fg="white").grid(row=4,column=0,pady=11)
+       load4_entry=Entry(Frame1,borderwidth=2,width=15,textvariable=load_1d).grid(row=4,column=1,padx=10)
+
+       load5=Label(Frame1,text="Boiler Efficiency",font=("Arial Black",11),bg="gray22",fg="white").grid(row=5,column=0,pady=11)
+       load5_entry=Entry(Frame1,borderwidth=2,width=15,textvariable=load_1e).grid(row=5,column=1,padx=10)
+
+       load6=Label(Frame1,text="Boiler Efficiency",font=("Arial Black",11),bg="gray22",fg="white").grid(row=6,column=0,pady=11)
+       load6_entry=Entry(Frame1,borderwidth=2,width=15,textvariable=load_1f).grid(row=6,column=1,padx=10)
+
+       load7=Label(Frame1,text="Boiler Efficiency",font=("Arial Black",11),bg="gray22",fg="white").grid(row=7,column=0,pady=11)
+       load7_entry=Entry(Frame1,borderwidth=2,width=15,textvariable=load_1g).grid(row=7,column=1,padx=10)
+
+       X1=Label(Frame1,text="X1 Value",font=("Arial Black",11),bg="gray22",fg="white").grid(row=1,column=3,pady=11)
+       X1_entry=Entry(Frame1,borderwidth=2,width=15,textvariable=e_1).grid(row=1,column=4,padx=10)
+
+       X2=Label(Frame1,text="X2 Value",font=("Arial Black",11),bg="gray22",fg="white").grid(row=2,column=3,pady=11)
+       X2_entry=Entry(Frame1,borderwidth=2,width=15,textvariable=e_2).grid(row=2,column=4,padx=10)
+
+       X3=Label(Frame1,text="X3 Value",font=("Arial Black",11),bg="gray22",fg="white").grid(row=3,column=3,pady=11)
+       X3_entry=Entry(Frame1,borderwidth=2,width=15,textvariable=e_3).grid(row=3,column=4,padx=10)
+
+       X4=Label(Frame1,text="X4 Value",font=("Arial Black",11),bg="gray22",fg="white").grid(row=4,column=3,pady=11)
+       X4_entry=Entry(Frame1,borderwidth=2,width=15,textvariable=e_4).grid(row=4,column=4,padx=10)
+
+       X5=Label(Frame1,text="X5 Value",font=("Arial Black",11),bg="gray22",fg="white").grid(row=5,column=3,pady=11)
+       X5_entry=Entry(Frame1,borderwidth=2,width=15,textvariable=e_5).grid(row=5,column=4,padx=10)
+
+       X6=Label(Frame1,text="X6 Value",font=("Arial Black",11),bg="gray22",fg="white").grid(row=6,column=3,pady=11)
+       X6_entry=Entry(Frame1,borderwidth=2,width=15,textvariable=e_6).grid(row=6,column=4,padx=10)
+
+       X7=Label(Frame1,text="X7 Value",font=("Arial Black",11),bg="gray22",fg="white").grid(row=7,column=3,pady=11)
+       X7_entry=Entry(Frame1,borderwidth=2,width=15,textvariable=e_7).grid(row=7,column=4,padx=10)
+
+       boiler_ld=LabelFrame(Loads,text="",font=("Arial Black",12),relief=GROOVE,bd=10,bg='gray22',fg="#6C3483")
+       boiler_ld.place(x=30,y=460,height=45,width=250)
+       Radiobutton(boiler_ld,text='BarGraph',variable=ch,value=1).grid(row=15,column=1)
+       Radiobutton(boiler_ld,text='PieChart',variable=ch,value=2).grid(row=15,column=2)
+       Radiobutton(boiler_ld,text='LineGraph',variable=ch,value=3).grid(row=15,column=3)
+       boiler_ld1=LabelFrame(Loads,text="",font=("Arial Black",12),relief=GROOVE,bd=10,bg='gray22',fg="#6C3483")
+       boiler_ld1.place(x=30,y=500,height=85,width=250)
+       Button(boiler_ld1,text="Plot",font=("Arial Black",15),pady=10,bg="gray8",fg="white",command=apple).grid(row=150,column=260,padx=12)
+
+
+      
+       
+#Gas fuel calcualtion with analysis /by dr hayati
+class Inertia(Frame):
+    def __init__(self,*args,**kwargs):
+        Frame.__init__(self,*args,**kwargs)
+
+        display_title= Label(self, text="Fuel Analysis/Energy Saving",bd=12,relief=GROOVE,font=("Arial Black",20),bg='gray22',fg='white').pack(fill=X)
+        sub_display = LabelFrame(self,text="",bd=12,relief=GROOVE,font=("Times New Roman",14),bg="gray22",fg="white")
+        sub_display.place(x=0,y=70,relwidth=1,relheight=0.87)
+        #variable to be used
+        self.tstack=DoubleVar()
+        self.tambient=DoubleVar()
+        self.GCVFUEL=DoubleVar()
+        self.oxyper=DoubleVar()
+        self.oxyper2=DoubleVar()
+        self.airdensity=DoubleVar()
+        self.fueldensity=DoubleVar()
+        self.fuelfiring=DoubleVar()
+        self.feedin=DoubleVar()
+        self.feedout=DoubleVar()
+        #x is mole of CO2
+        self.x=DoubleVar()
+        #y is mole of N2
+        self.y=DoubleVar()
+        #mol of H2O
+        self.t=DoubleVar()
+        self.total_lost3=StringVar()
+        self.total_effi1=StringVar()
+        self.new_effi2=StringVar()
+        self.old_effi2=StringVar()
+        self.economizer_effi=StringVar()
+
+    #==========for economizer saving cal=============
+        self.LPGmonthly=DoubleVar()
+        self.flueinlet=DoubleVar()
+        self.flueoutlet=DoubleVar()
+        self.investment=DoubleVar()
+        self.investment_2=DoubleVar()
+        self.annuallpg_cost=DoubleVar()
+        self.unaccountloss=DoubleVar()
+        ch=IntVar()
+        self.boiler_info1=StringVar()
+        self.boiler_no1=StringVar()
+        self.file_no1=StringVar()
+    #==========Equation========================
+
+        details1=LabelFrame(sub_display,text="Boiler Analysis",font=("Arial Black",12),bg="gray28",fg="white",relief=GROOVE,bd=10)
+        details1.place(x=0,y=0,relwidth=1)
+
+
+        in_frame = LabelFrame(sub_display,text="Ultimate Analysis",bd=12,relief=GROOVE,font=("Arial Black",14),bg="gray22",fg="white")
+        in_frame.place(x=5,y=70,relwidth=0.21,relheight=0.9)
+
+        boiler_name4=Label(details1,text="Boiler Info",font=("Arial Black",14),bg="gray30",fg="white").grid(row=0,column=0,padx=15)
+        boiler_entry4=Entry(details1,borderwidth=4,width=30,textvariable=self.boiler_info1).grid(row=0,column=1,padx=8)
+        
+        file_name=Label(details1,text="File No.",font=("Arial Black",14),bg="gray30",fg="white").grid(row=0,column=2,padx=10)
+        file_entry=Entry(details1,borderwidth=4,width=30,textvariable=self.file_no1).grid(row=0,column=3,padx=8)
+        
+        boil_name=Label(details1,text="Type of Fuel",font=("Arial Black",14),bg="gray30",fg="white").grid(row=0,column=4,padx=10)
+        boil_entry=Entry(details1,borderwidth=4,width=30,textvariable=self.boiler_no1).grid(row=0,column=5,padx=8)
+
+        out_frame = LabelFrame(sub_display,text="Optimization Area",bd=12,relief=GROOVE,font=("Arial Black",14),bg="gray22",fg="white")
+        out_frame.place(x=850,y=480,relwidth=0.5,relheight=0.3)
+
+        carr=LabelFrame(out_frame,text="Reduce Excess Air (B)",font=("Arial Black",13),bg="gray22",fg="white",relief=GROOVE,bd=10)
+        carr.place(x=475,y=10,height=150,width=450)
+
+        new_ef=Label(carr,text="New Efficiency",font=("Arial Black",11),bg="gray22",fg="white").grid(row=0,column=0)
+        new_ef_entry=Entry(carr,width=30,borderwidth=2,textvariable=self.new_effi2).grid(row=0,column=1,padx=10,pady=7)
+
+        old_ef = Label(carr,text="Old Efficiency",font=("Arial Black",11),bg="gray22",fg="white").grid(row=1,column=0)
+        old_ef_entry=Entry(carr,width=30,borderwidth=2,textvariable=self.old_effi2).grid(row=1,column=1,padx=10,pady=7)
+
+        carr1=LabelFrame(out_frame,text="Economizer Energy Saving (A)",font=("Arial Black",13),bg="gray22",fg="white",relief=GROOVE,bd=10)
+        carr1.place(x=5,y=10,height=150,width=450)
+
+        new_ef=Label(carr1,text="New Efficiency",font=("Arial Black",11),bg="gray22",fg="white").grid(row=0,column=0)
+        new_ef_entry=Entry(carr1,width=30,borderwidth=2,textvariable=self.economizer_effi).grid(row=0,column=1,padx=10,pady=7)
+
+        old_ef = Label(carr1,text="Old Efficiency",font=("Arial Black",11),bg="gray22",fg="white").grid(row=1,column=0)
+        old_ef_entry=Entry(carr1,width=30,borderwidth=2,textvariable=self.old_effi2).grid(row=1,column=1,padx=10,pady=7)
+        
+
+#========energy saving for feedwater preheating using an economizer======#
+        energy_save = LabelFrame(sub_display,text="Energy savings ",bd=12,relief=GROOVE,font=("Arial Black",14),bg="gray22",fg="white")
+        energy_save.place(x=400,y=70,relwidth=0.23,relheight=0.9)
+
+        q1=Label(energy_save,text="Monthly LPG usage",font=("Arial Black",11),bg="gray22",fg="white").grid(row=0,column=0,pady=11)
+        q1_entry=Entry(energy_save,borderwidth=2,width=15,textvariable=self.LPGmonthly).grid(row=0,column=1,padx=10)
+        
+        q2=Label(energy_save,text="Flue Inlet Temp",font=("Arial Black",11),bg="gray22",fg="white").grid(row=1,column=0,pady=11)
+        q2_entry=Entry(energy_save,borderwidth=2,width=15,textvariable=self.flueinlet).grid(row=1,column=1,padx=10)
+
+        q3=Label(energy_save,text="Flue Outlet Temp",font=("Arial Black",11),bg="gray22",fg="white").grid(row=2,column=0,pady=11)
+        q3_entry=Entry(energy_save,borderwidth=2,width=15,textvariable=self.flueoutlet).grid(row=2,column=1,padx=10)
+
+        q4=Label(energy_save,text="Investment Economizer",font=("Arial Black",11),bg="gray22",fg="white").grid(row=3,column=0,pady=11)
+        q4_entry=Entry(energy_save,borderwidth=2,width=15,textvariable=self.investment).grid(row=3,column=1,padx=10)
+        
+        q4=Label(energy_save,text="Investment Excess Air",font=("Arial Black",11),bg="gray22",fg="white").grid(row=4,column=0,pady=11)
+        q4_entry=Entry(energy_save,borderwidth=2,width=15,textvariable=self.investment_2).grid(row=4,column=1,padx=10)
+        
+        q6=Label(energy_save,text="Annual LPG Cost",font=("Arial Black",11),bg="gray22",fg="white").grid(row=5,column=0,pady=11)
+        q6_entry=Entry(energy_save,borderwidth=2,width=15,textvariable=self.annuallpg_cost).grid(row=5,column=1,padx=10)
+
+        q7=Label(energy_save,text="Unaccounted loss",font=("Arial Black",11),bg="gray22",fg="white").grid(row=6,column=0,pady=11)
+        q7_entry=Entry(energy_save,borderwidth=2,width=15,textvariable=self.unaccountloss).grid(row=6,column=1,padx=10)
+
+#========for calculation of efficiency============================#
+        itm1=Label(in_frame,text="Stack Temperature",font=("Arial Black",11),bg="gray22",fg="white").grid(row=0,column=0,pady=11)
+        itm1_entry=Entry(in_frame,borderwidth=2,width=15,textvariable=self.tstack).grid(row=0,column=1,padx=10)
+
+        itm2=Label(in_frame,text="Air Density",font=("Arial Black",11),bg="gray22",fg="white").grid(row=1,column=0,pady=11)
+        itm2_entry=Entry(in_frame,borderwidth=2,width=15,textvariable=self.airdensity).grid(row=1,column=1,padx=10)
+
+        itm3=Label(in_frame,text="Fuel Density",font=("Arial Black",11),bg="gray22",fg="white").grid(row=2,column=0,pady=11)
+        itm3_entry=Entry(in_frame,borderwidth=2,width=15,textvariable=self.fueldensity).grid(row=2,column=1,padx=10)
+
+        itm4=Label(in_frame,text="Mol CO2",font=("Arial Black",11),bg="gray22",fg="white").grid(row=3,column=0,pady=11)
+        itm4_entry=Entry(in_frame,borderwidth=2,width=15,textvariable=self.x).grid(row=3,column=1,padx=10)
+
+        itm5=Label(in_frame,text="Mol  N2",font=("Arial Black",11),bg="gray22",fg="white").grid(row=4,column=0,pady=11)
+        itm5_entry=Entry(in_frame,borderwidth=2,width=15,textvariable=self.y).grid(row=4,column=1,padx=10)
+
+        itm10=Label(in_frame,text="Mol H2O",font=("Arial Black",11),bg="gray22",fg="white").grid(row=5,column=0,pady=11)
+        itm10_entry=Entry(in_frame,borderwidth=2,width=15,textvariable=self.t).grid(row=5,column=1,padx=10)
+
+        itm6=Label(in_frame,text="Ambient Temperature",font=("Arial Black",11),bg="gray22",fg="white").grid(row=6,column=0,pady=11)
+        itm6_entry=Entry(in_frame,borderwidth=2,width=15,textvariable=self.tambient).grid(row=6,column=1,padx=10)
+
+        itm7=Label(in_frame,text="GCV fuel",font=("Arial Black",11),bg="gray22",fg="white").grid(row=7,column=0,pady=11)
+        itm7_entry=Entry(in_frame,borderwidth=2,width=15,textvariable=self.GCVFUEL).grid(row=7,column=1,padx=10)
+
+        itm8=Label(in_frame,text="Initial oxygen",font=("Arial Black",11),bg="gray22",fg="white").grid(row=8,column=0,pady=11)
+        itm8_entry=Entry(in_frame,borderwidth=2,width=15,textvariable=self.oxyper).grid(row=8,column=1,padx=10)
+
+        itm9=Label(in_frame,text="Final oxygen",font=("Arial Black",11),bg="gray22",fg="white").grid(row=9,column=0,pady=11)
+        itm9_entry=Entry(in_frame,borderwidth=2,width=15,textvariable=self.oxyper2).grid(row=9,column=1,padx=10)
+    
+        itm10=Label(in_frame,text="Fuel Firing Rate",font=("Arial Black",11),bg="gray22",fg="white").grid(row=10,column=0,pady=11)
+        itm10_entry=Entry(in_frame,borderwidth=2,width=15,textvariable=self.fuelfiring).grid(row=10,column=1,padx=10)
+
+        itm11=Label(in_frame,text="FeedWater Inlet Temp",font=("Arial Black",11),bg="gray22",fg="white").grid(row=11,column=0,pady=11)
+        itm11_entry=Entry(in_frame,borderwidth=2,width=15,textvariable=self.feedin).grid(row=11,column=1,padx=10)    
+
+        itm12=Label(in_frame,text="FeedWater Outlet Temp",font=("Arial Black",11),bg="gray22",fg="white").grid(row=12,column=0,pady=11)
+        itm12_entry=Entry(in_frame,borderwidth=2,width=15,textvariable=self.feedout).grid(row=12,column=1,padx=10)     
+
+        #------------------------------------------------------------------------------------------------------------------------------------------------------#
+        boilerarea2=Frame(self,bd=10,relief=GROOVE,bg="gray8")
+        boilerarea2.place(x=1550,y=170,width=350,height=380)
+       
+        bill_title=Label(boilerarea2,text="Boiler Area",font=("Arial Black",17),bd=7,relief=GROOVE,bg="gray8",fg="white").pack(fill=X)
+        
+        scrol_y=Scrollbar(boilerarea2,orient=VERTICAL)
+        self.txtarea=Text(boilerarea2,yscrollcommand=scrol_y.set)
+        scrol_y.pack(side=RIGHT,fill=Y)
+        scrol_y.config(command=self.txtarea.yview)
+        self.txtarea.pack(fill=BOTH,expand=1)
+        #--------------------------------------------------------------------------------------------------------------------------------------------------------#
+        savingarea=Frame(self,bd=10,relief=GROOVE,bg="gray8")
+        savingarea.place(x=850,y=170,width=350,height=380)
+       
+        bill_title=Label(savingarea,text="Fuel Saving Part 1",font=("Arial Black",17),bd=7,relief=GROOVE,bg="gray8",fg="white").pack(fill=X)
+        
+        scrol_y=Scrollbar(savingarea,orient=VERTICAL)
+        self.txtarea1=Text(savingarea,yscrollcommand=scrol_y.set)
+        scrol_y.pack(side=RIGHT,fill=Y)
+        scrol_y.config(command=self.txtarea1.yview)
+        self.txtarea1.pack(fill=BOTH,expand=1)
+        #---------------------------------------------------------------------------------------------------------------------------------------------------------#
+        savingarea2=Frame(self,bd=10,relief=GROOVE,bg="gray8")
+        savingarea2.place(x=1200,y=170,width=350,height=380)
+       
+        bill_title=Label(savingarea2,text="Fuel Saving Part 2",font=("Arial Black",17),bd=7,relief=GROOVE,bg="gray8",fg="white").pack(fill=X)
+        
+        scrol_y=Scrollbar(savingarea2,orient=VERTICAL)
+        self.txtarea2=Text(savingarea2,yscrollcommand=scrol_y.set)
+        scrol_y.pack(side=RIGHT,fill=Y)
+        scrol_y.config(command=self.txtarea2.yview)
+        self.txtarea2.pack(fill=BOTH,expand=1)
+        #---------------------------------------------------------------------------------------------------------------------------------------------------------#
+        #boiler_data=LabelFrame(self,text="Fire Tube Boiler Losses",font=("Arial Black",12),relief=GROOVE,bd=10,bg="gray8",fg="white")
+        #boiler_data.place(x=0,y=620,relwidth=1,height=137)
+
+        #total_lost=Label(boiler_data,text="Total Boiler Loss",font=("Arial Black",11),bg="gray8",fg="white").grid(row=0,column=0)
+        #total_loss_entry=Entry(boiler_data,width=30,borderwidth=2,textvariable=self.total_lost3).grid(row=0,column=1,padx=10,pady=7)
+
+        #total_efficiency = Label(boiler_data,text="Total Efficiency",font=("Arial Black",11),bg="gray8",fg="white").grid(row=1,column=0)
+        #total_efficiency=Entry(boiler_data,width=30,borderwidth=2,textvariable=self.total_effi1).grid(row=1,column=1,padx=10,pady=7)
+
+        button1_frame=Frame(self,bd=7,relief=GROOVE,bg="gray8")
+        button1_frame.place(x=900,y=850,width=500,height=95)
+
+        button_total=Button(button1_frame,text="Total Losses",font=("Arial Black",15),pady=10,bg="gray22",fg="white",command=lambda:cal(self)).grid(row=0,column=0,padx=12)
+        capabella(self)
+        button_saving=Button(button1_frame,text="Saving(A)",font=("Arial Black",15),pady=10,bg="gray22",fg="white",command=lambda:saving(self)).grid(row=0,column=1,padx=10,pady=6)
+        bella(self)
+        button_saving2=Button(button1_frame,text="Saving(B)",font=("Arial Black",15),pady=10,bg="gray22",fg="white",width=8,command=lambda:saving2(self)).grid(row=0,column=2,padx=10,pady=6)
+        savingpart2(self)
+
+        #button_plot=Button(button1_frame,text="Plot",font=("Arial Black",15),pady=10,bg="gray22",fg="white",width=8,command=lambda:plot1(self)).grid(row=0,column=3,padx=10,pady=6)
+
+
+
+
+    
+
+def cal(self):
+    a_2= self.oxyper.get()/(21-self.oxyper.get())
+    excessair=(26.65*a_2)*(self.airdensity.get()/self.fueldensity.get())
+    dry_gas=excessair + (self.x.get()+self.y.get())
+    stack1=(self.tstack.get()*(9/5))+32
+    ambient1=(self.tambient.get()*(9/5))+32
+    b=dry_gas*0.24*(stack1-ambient1)
+    self.loss_dg=(b/self.GCVFUEL.get())*100
+    hsteam=1055 + (0.467*stack1)
+    q4=self.t.get()
+    self.wet_loss= ((q4*(hsteam-58.6))/self.GCVFUEL.get())*100
+
+    #NEW REDUCTION OF EXCESS AIR IN THE BOILER
+    a_q = self.oxyper2.get()/(21-self.oxyper2.get())
+    excessair1=(26.65*a_q)*(self.airdensity.get()/self.fueldensity.get())
+    dry_gas1=excessair1 + (self.x.get()+self.y.get())
+    b1=dry_gas1*0.24*(stack1-ambient1)    
+    self.loss_dry_gas=(b1/self.GCVFUEL.get())*100
+
+
+    self.total_loss2 =( 
+        self.loss_dg+
+        self.wet_loss+
+        self.unaccountloss.get()
+    )
+
+    self.total_effici= (
+        100 - (
+        self.loss_dg+
+        self.wet_loss+
+        self.unaccountloss.get()))
+
+
+    boilerarea2(self)
+
+def capabella(self):
+    self.txtarea.delete(1.0,END)
+    self.txtarea.insert(END,"\tWELCOME BOILER SOFTWARE\n\tFire Tube Boiler\n\tBy Surendran")
+    self.txtarea.insert(END,"\n====================================\n")
+    self.txtarea.insert(END,"\nLosses\t\tValue\n")
+    self.txtarea.insert(END,"\n====================================\n")
+
+def boilerarea2(self):
+    capabella(self)
+    self.a=float("{0:0.2f}".format(self.loss_dg))
+    self.txtarea.insert(END,f"Loss of dry gas:\t\t{self.a}\n")
+    self.txtarea.insert(END,f"------------------------------------\n")
+    self.b=float("{0:0.2f}".format(self.wet_loss))
+    self.txtarea.insert(END,f"Wet loss:\t\t{self.b}\n") 
+    self.txtarea.insert(END,f"------------------------------------\n")
+    self.c=float("{0:0.2f}".format(self.total_loss2))
+    self.txtarea.insert(END,f"Total Loss\t\t{self.c}\n") 
+    self.txtarea.insert(END,f"------------------------------------\n")
+    self.d=float("{0:0.2f}".format(self.total_effici))
+    self.txtarea.insert(END,f"Total Efficiency\t\t{self.d}\n") 
+    self.txtarea.insert(END,f"------------------------------------\n")
+#===================================================================================================
+def saving(self):
+    # refers to monthly LPG usage
+    self.LPGannual=self.LPGmonthly.get()*12
+    self.LPGannual_1=float("{0:0.2f}".format(self.LPGannual))
+    # refers to annual lpg consumption
+    self.annual_LPGconsum=(self.LPGannual_1)*49900*(1/3600)
+    self.annual_LPGconsum1=float("{0:0.2f}".format(self.annual_LPGconsum))
+    #ratio1 refers to the difference between flue inlet and outlet
+    self.ratio1= self.flueinlet.get() - self.flueoutlet.get()
+    #it is said that every 20 deg drop in the flue temperature considered as 1% increment in efficiency
+    self.ratio2=self.ratio1/20    #ratio2 considered as increment from the old efficiency to new efficiency
+    #effinew=100-(self.loss_dg+self.wet_loss+4)
+    self.old_effi=100-(self.loss_dg+self.wet_loss+self.unaccountloss.get())
+    self.old_effi0=float("{0:0.2f}".format(self.old_effi))
+
+    oldeff=(self.old_effi0)
+    self.old_effi2.set(str(oldeff)+" %")
+
+
+    self.new_effi=self.ratio2+self.old_effi0  #new efficiency after economizer added 
+    self.new_effi0=float("{0:0.1f}".format(self.new_effi))
+
+    new_effig=self.new_effi0
+    self.economizer_effi.set(str(new_effig)+" %") 
+
+    self.diff_effi=self.new_effi0-self.old_effi0
+    self.diff_effi0=float("{0:0.2f}".format(self.diff_effi))
+
+    self.percent_fuel= (self.diff_effi0/ self.new_effi0)*100
+    self.percent_fuel0=float("{0:0.1f}".format(self.percent_fuel))
+    # annual fuel savings
+    self.annual_fuel_saving=self.LPGannual_1*(self.percent_fuel0*0.01)
+    self.annual_fuel_saving0=float("{0:0.2f}".format(self.annual_fuel_saving))
+    # annual energy savings
+    self.annual_energy_saving=self.annual_fuel_saving0*49900*(1/3600)
+    self.annual_energy_saving0=float("{0:0.2f}".format(self.annual_energy_saving))
+    # annual saving cost 
+    self.annual_cost_saving=self.annual_fuel_saving0*2.76
+    self.annual_cost_saving0=float("{0:0.2f}".format(self.annual_cost_saving))
+    # annual CO2 savings
+    self.annual_co2_saving=(self.annual_fuel_saving0*0.001)*2984.63
+    self.annual_co2_saving0=float("{0:0.2f}".format(self.annual_co2_saving))
+
+    self.payback=self.investment.get()/self.annual_cost_saving0
+    self.payback0=float("{0:0.2f}".format(self.payback))
+    savingarea(self)
+
+   
+def bella(self):
+    self.txtarea1.delete(1.0,END)
+    self.txtarea1.insert(END,"Feedwater Preheating Using an\nEconomiser Analysis")
+    self.txtarea1.insert(END,"\n====================================\n")
+    self.txtarea1.insert(END,"\nItem\t\tValue\n")
+    self.txtarea1.insert(END,"\n====================================\n")
+
+def savingarea(self):
+    bella(self)
+    self.e=float("{0:0.2f}".format(self.LPGannual))
+    self.txtarea1.insert(END,f"Estimated Annual LPG |\t{self.LPGannual_1}\n")
+    self.txtarea1.insert(END,"------------------------------------\n")
+    self.f=float("{0:0.2f}".format(self.annual_LPGconsum))
+    self.txtarea1.insert(END,f"Annual LPG Energy Consumption |\t{self.annual_LPGconsum1}\n")    
+    self.txtarea1.insert(END,"------------------------------------\n")
+    self.g=float("{0:0.2f}".format(self.percent_fuel))
+    self.txtarea1.insert(END,f"Percent fuel saving |\t{self.percent_fuel0}\n") 
+    self.txtarea1.insert(END,"------------------------------------\n")
+    self.h=float("{0:0.2f}".format(self.annual_fuel_saving))
+    self.txtarea1.insert(END,f"Annual fuel saving |\t{self.annual_fuel_saving0}\n") 
+    self.txtarea1.insert(END,"------------------------------------\n")
+    self.i=float("{0:0.2f}".format(self.annual_energy_saving))
+    self.txtarea1.insert(END,f"Annual Energy saving |\t{self.annual_energy_saving0 }\n") 
+    self.txtarea1.insert(END,"------------------------------------\n")
+    self.j=float("{0:0.2f}".format(self.annual_cost_saving))
+    self.txtarea1.insert(END,f"Annual Cost Saving |\t{self.annual_cost_saving0}\n")
+    self.txtarea1.insert(END,"------------------------------------\n")
+    self.k=float("{0:0.2f}".format(self.annual_co2_saving))
+    self.txtarea1.insert(END,f"Annual CO2 Saving |\t{self.annual_co2_saving0}\n") 
+    self.txtarea1.insert(END,"------------------------------------\n")
+    self.l=float("{0:0.2f}".format(self.payback))
+    self.txtarea1.insert(END,f"Payback period |\t{self.payback0}\n") 
+    self.txtarea1.insert(END,"------------------------------------\n") 
+
+def saving2(self):
+    self.loss_dry_gas0=float("{0:0.3f}".format(self.loss_dry_gas))
+    self.loss_dg0=float("{0:0.1f}".format(self.loss_dg))
+    self.new_dg=self.loss_dg0-self.loss_dry_gas0
+    self.new_dg0=float("{0:0.3f}".format(self.new_dg))
+    self.new_efficiency=self.old_effi0+self.new_dg0
+    self.new_efficiency0=float("{0:0.1f}".format(self.new_efficiency))
+
+
+    neweff=(self.new_efficiency0)
+    self.new_effi2.set(str(neweff)+" %")
+
+    self.new_percent=((self.new_efficiency0-self.old_effi0)/self.new_efficiency0)*100
+    self.new_percent0=float("{0:0.1f}".format(self.new_percent))
+
+    self.annual_fuel_saving_1=self.LPGannual_1*(self.new_percent0*0.01)
+    self.annual_fuel_saving_10=float("{0:0.2f}".format(self.annual_fuel_saving_1))
+    # annual energy savings
+    self.annual_energy_saving_1=self.annual_fuel_saving_10*49900*(1/3600)
+    self.annual_energy_saving_10=float("{0:0.2f}".format(self.annual_energy_saving_1))
+    # annual saving cost 
+    self.annual_cost_saving_1=self.annual_fuel_saving_10*2.76
+    self.annual_cost_saving_10=float("{0:0.2f}".format(self.annual_cost_saving_1))
+    # annual CO2 savings
+    self.annual_co2_saving_1=(self.annual_fuel_saving_10*0.001)*2984.63
+    self.annual_co2_saving_10=float("{0:0.2f}".format(self.annual_co2_saving_1))
+
+    self.payback_1=self.investment_2.get()/self.annual_cost_saving_10
+    self.payback_10=float("{0:0.2f}".format(self.payback_1))
+
+    savingarea2(self)
+
+
+
+def savingpart2(self):
+    self.txtarea2.delete(1.0,END)
+    self.txtarea2.insert(END,"Reduce excess air supply Analysis")
+    self.txtarea2.insert(END,"\n====================================\n")
+    self.txtarea2.insert(END,"\nItem\t\tValue\n")
+    self.txtarea2.insert(END,"\n====================================\n")
+
+def savingarea2(self):
+    savingpart2(self)
+    self.txtarea2.insert(END,f"Estimated Annual LPG |\t{self.LPGannual_1}\n")
+    self.txtarea2.insert(END,"------------------------------------\n")
+    self.txtarea2.insert(END,f"Annual LPG Energy Consumption |\t{self.annual_LPGconsum1}\n")    
+    self.txtarea2.insert(END,"------------------------------------\n")
+    self.txtarea2.insert(END,f"Percent fuel saving |\t{self.new_percent0}\n") 
+    self.txtarea2.insert(END,"------------------------------------\n")
+    self.txtarea2.insert(END,f"Annual fuel saving |\t{self.annual_fuel_saving_10}\n") 
+    self.txtarea2.insert(END,"------------------------------------\n")
+    self.txtarea2.insert(END,f"Annual Energy saving |\t{self.annual_energy_saving_10}\n") 
+    self.txtarea2.insert(END,"------------------------------------\n")
+    self.txtarea2.insert(END,f"Annual Cost Saving |\t{self.annual_cost_saving_10}\n")
+    self.txtarea2.insert(END,"------------------------------------\n")
+    self.txtarea2.insert(END,f"Annual CO2 Saving |\t{self.annual_co2_saving_10}\n") 
+    self.txtarea2.insert(END,"------------------------------------\n")
+    self.txtarea2.insert(END,f"Payback period |\t{self.payback_10}\n") 
+    self.txtarea2.insert(END,"------------------------------------\n") 
+
+
+
+class Velocity(Frame):
+   def __init__(self,*args,**kwargs):
+       Frame.__init__(self,*args,**kwargs)
+       #entry from user and plotting from a boiler taken from wilmar sdn.bhd
+       display_title= Label(self, text="Step Control",bd=12,relief=GROOVE,font=("Arial Black",15),bg='gray22',fg='white').pack(fill=X)
+       label1=LabelFrame(self, text="",bd=12,relief=GROOVE,font=("Arial Black",20),bg='gray22',fg='white')
+       label1.place(x=0,y=70,relheight=0.8,relwidth=1)
+       #--------------No steps
+       labela=LabelFrame(label1, text="No Steps",bd=12,relief=GROOVE,font=("Arial Black",15),bg='gray22',fg='white')
+       labela.place(x=10,y=10,relheight=0.8,relwidth=0.15)
+       #--------------Stoker
+       labelb=LabelFrame(label1, text="Stoker(A)/Hz",bd=12,relief=GROOVE,font=("Arial Black",15),bg='gray22',fg='white')
+       labelb.place(x=350,y=10,relheight=0.8,relwidth=0.18)
+       #--------------Primary fan damper
+       labelc=LabelFrame(label1, text="Primary Fan Damper(B)/%",bd=12,relief=GROOVE,font=("Arial Black",15),bg='gray22',fg='white')
+       labelc.place(x=750,y=10,relheight=0.8,relwidth=0.20)
+       #--------------Secondary Fan damper
+       labeld=LabelFrame(label1, text="Secondary Fan Damper(C)/%",bd=12,relief=GROOVE,font=("Arial Black",15),bg='gray22',fg='white')
+       labeld.place(x=1200,y=10,relheight=0.8,relwidth=0.21)
+
+
+       bar1=Label(labela,text="0 - 1 Bar",font=("Arial Black",16),bg="gray22",fg="white").grid(row=0,column=0,pady=5,padx=50)
+       bar2=Label(labela,text="2 - 3 Bar",font=("Arial Black",16),bg="gray22",fg="white").grid(row=1,column=0,pady=5,padx=50)
+       bar3=Label(labela,text="4 - 5 Bar",font=("Arial Black",16),bg="gray22",fg="white").grid(row=2,column=0,pady=5,padx=50)
+       bar4=Label(labela,text="6 - 7 Bar",font=("Arial Black",16),bg="gray22",fg="white").grid(row=3,column=0,pady=5,padx=50)
+       bar5=Label(labela,text="8 - 9 Bar",font=("Arial Black",16),bg="gray22",fg="white").grid(row=4,column=0,pady=5,padx=50)
+       bar6=Label(labela,text="10 - 11 Bar",font=("Arial Black",16),bg="gray22",fg="white").grid(row=5,column=0,pady=5,padx=50)
+       bar7=Label(labela,text="12 - 13 Bar",font=("Arial Black",16),bg="gray22",fg="white").grid(row=6,column=0,pady=5,padx=50)
+       bar8=Label(labela,text="14 - 15 Bar",font=("Arial Black",16),bg="gray22",fg="white").grid(row=7,column=0,pady=5,padx=50)
+       bar9=Label(labela,text="16 - 17 Bar",font=("Arial Black",16),bg="gray22",fg="white").grid(row=8,column=0,pady=5,padx=50)
+       bar10=Label(labela,text="18 - 19 Bar",font=("Arial Black",16),bg="gray22",fg="white").grid(row=9,column=0,pady=5,padx=50)
+       bar11=Label(labela,text="20- 21 Bar",font=("Arial Black",16),bg="gray22",fg="white").grid(row=10,column=0,pady=5,padx=50)
+       bar12=Label(labela,text="22- 23 Bar",font=("Arial Black",16),bg="gray22",fg="white").grid(row=11,column=0,pady=5,padx=50)
+
+       stoke1=IntVar()
+       stoke2=IntVar()
+       stoke3=IntVar()
+       stoke4=IntVar()
+       stoke5=IntVar()
+       stoke6=IntVar()
+       stoke7=IntVar()
+       stoke8=IntVar()
+       stoke9=IntVar()
+       stoke10=IntVar()
+       stoke11=IntVar()
+       stoke12=IntVar()
+
+       p1=IntVar()
+       p2=IntVar()
+       p3=IntVar()
+       p4=IntVar()
+       p5=IntVar()
+       p6=IntVar()
+       p7=IntVar()
+       p8=IntVar()
+       p9=IntVar()
+       p10=IntVar()
+       p11=IntVar()
+       p12=IntVar()
+
+       d1=IntVar()
+       d2=IntVar()
+       d3=IntVar()
+       d4=IntVar()
+       d5=IntVar()
+       d6=IntVar()
+       d7=IntVar()
+       d8=IntVar()
+       d9=IntVar()
+       d10=IntVar()
+       d11=IntVar()
+       d12=IntVar()
+
+       if (d1.get=="" or d2.get()==""):
+                       messagebox.showerror("Error", "Please fill in the entry to proceed with plotting")
+
+       b1=d1.get()
+       b2=d2.get()
+       b3=d3.get()
+       b4=d4.get()
+       b5=d5.get()
+       b6=d6.get()
+       b7=d7.get()
+       b8=d8.get()
+       b9=d9.get()
+       b10=d10.get()
+       b11=d11.get()
+       b12=d12.get()
+
+       choice=IntVar()
+
+       stoker1=Entry(labelb,borderwidth=5,width=25,textvariable=stoke1).grid(row=0,column=0,padx=50,pady=9)
+       stoker2=Entry(labelb,borderwidth=5,width=25,textvariable=stoke2).grid(row=1,column=0,padx=50,pady=9)
+       stoker3=Entry(labelb,borderwidth=5,width=25,textvariable=stoke3).grid(row=2,column=0,padx=50,pady=9)
+       stoker4=Entry(labelb,borderwidth=5,width=25,textvariable=stoke4).grid(row=3,column=0,padx=50,pady=9)
+       stoker5=Entry(labelb,borderwidth=5,width=25,textvariable=stoke5).grid(row=4,column=0,padx=50,pady=9)
+       stoker6=Entry(labelb,borderwidth=5,width=25,textvariable=stoke6).grid(row=5,column=0,padx=50,pady=9)
+       stoker7=Entry(labelb,borderwidth=5,width=25,textvariable=stoke7).grid(row=6,column=0,padx=50,pady=9)
+       stoker8=Entry(labelb,borderwidth=5,width=25,textvariable=stoke8).grid(row=7,column=0,padx=50,pady=9)
+       stoker9=Entry(labelb,borderwidth=5,width=25,textvariable=stoke9).grid(row=8,column=0,padx=50,pady=9)
+       stoker10=Entry(labelb,borderwidth=5,width=25,textvariable=stoke10).grid(row=9,column=0,padx=50,pady=9)
+       stoker11=Entry(labelb,borderwidth=5,width=25,textvariable=stoke11).grid(row=10,column=0,padx=50,pady=9)  
+       stoker12=Entry(labelb,borderwidth=5,width=25,textvariable=stoke12).grid(row=11,column=0,padx=50,pady=9)
+
+       pa1=Entry(labelc,borderwidth=5,width=25,textvariable=p1).grid(row=0,column=0,padx=50,pady=9)
+       pa2=Entry(labelc,borderwidth=5,width=25,textvariable=p2).grid(row=1,column=0,padx=50,pady=9)
+       pa3=Entry(labelc,borderwidth=5,width=25,textvariable=p3).grid(row=2,column=0,padx=50,pady=9)
+       pa4=Entry(labelc,borderwidth=5,width=25,textvariable=p4).grid(row=3,column=0,padx=50,pady=9)
+       pa5=Entry(labelc,borderwidth=5,width=25,textvariable=p5).grid(row=4,column=0,padx=50,pady=9)
+       pa6=Entry(labelc,borderwidth=5,width=25,textvariable=p6).grid(row=5,column=0,padx=50,pady=9)
+       pa7=Entry(labelc,borderwidth=5,width=25,textvariable=p7).grid(row=6,column=0,padx=50,pady=9)
+       pa8=Entry(labelc,borderwidth=5,width=25,textvariable=p8).grid(row=7,column=0,padx=50,pady=9)
+       pa9=Entry(labelc,borderwidth=5,width=25,textvariable=p9).grid(row=8,column=0,padx=50,pady=9)
+       pa10=Entry(labelc,borderwidth=5,width=25,textvariable=p10).grid(row=9,column=0,padx=50,pady=9)
+       pa11=Entry(labelc,borderwidth=5,width=25,textvariable=p11).grid(row=10,column=0,padx=50,pady=9)  
+       pa12=Entry(labelc,borderwidth=5,width=25,textvariable=p12).grid(row=11,column=0,padx=50,pady=9)
+
+       da1=Entry(labeld,borderwidth=5,width=25,textvariable=d1).grid(row=0,column=0,padx=50,pady=9)
+       da2=Entry(labeld,borderwidth=5,width=25,textvariable=d2).grid(row=1,column=0,padx=50,pady=9)
+       da3=Entry(labeld,borderwidth=5,width=25,textvariable=d3).grid(row=2,column=0,padx=50,pady=9)
+       da4=Entry(labeld,borderwidth=5,width=25,textvariable=d4).grid(row=3,column=0,padx=50,pady=9)
+       da5=Entry(labeld,borderwidth=5,width=25,textvariable=d5).grid(row=4,column=0,padx=50,pady=9)
+       da6=Entry(labeld,borderwidth=5,width=25,textvariable=d6).grid(row=5,column=0,padx=50,pady=9)
+       da7=Entry(labeld,borderwidth=5,width=25,textvariable=d7).grid(row=6,column=0,padx=50,pady=9)
+       da8=Entry(labeld,borderwidth=5,width=25,textvariable=d8).grid(row=7,column=0,padx=50,pady=9)
+       da9=Entry(labeld,borderwidth=5,width=25,textvariable=d9).grid(row=8,column=0,padx=50,pady=9)
+       da10=Entry(labeld,borderwidth=5,width=25,textvariable=d10).grid(row=9,column=0,padx=50,pady=9)
+       da11=Entry(labeld,borderwidth=5,width=25,textvariable=d11).grid(row=10,column=0,padx=50,pady=9)  
+       da12=Entry(labeld,borderwidth=5,width=25,textvariable=d12).grid(row=11,column=0,padx=50,pady=9)
+
+       def plots():
+          x_axis=StringVar()
+          x_axis=["0-1","2-3","4-5","6-7","8-9","10-11","12-13","14-15","16-17","18-19","20-21","22-23"]
+          ch=choice.get()
+          a=stoke1.get()
+          b=stoke2.get()
+          c=stoke3.get()
+          d=stoke4.get()
+          e=stoke5.get()
+          f=stoke6.get()
+          g=stoke7.get()
+          h=stoke8.get()
+          i=stoke9.get()
+          j=stoke10.get()
+          k=stoke11.get()
+          l=stoke12.get()
+          y_axis=[a,b,c,d,e,f,g,h,i,j,k,l]
+          plt.plot(x_axis,y_axis, color='red', marker='*')
+          plt.xlabel('Pressure, Bar')
+          plt.ylabel('Stoker speed, Hz')
+          plt.show()
+
+       def plots1():
+           x_axis=["0-1","2-3","4-5","6-7","8-9","10-11","12-13","14-15","16-17","18-19","20-21","22-23"]
+           a1=p1.get()
+           a2=p2.get()
+           a3=p3.get()
+           a4=p4.get()
+           a5=p5.get()
+           a6=p6.get()
+           a7=p7.get()
+           a8=p8.get()
+           a9=p9.get()
+           a10=p10.get()
+           a11=p11.get()
+           a12=p12.get()
+
+           y1_axis=[a1,a2,a3,a4,a5,a6,a7,a8,a9,a10,a11,a12]
+           plt.plot(x_axis,y1_axis, color='purple', marker='o')
+           plt.xlabel('Pressure, Bar')
+           plt.ylabel('Primary Fan Damper, %')
+           plt.show()
+
+       def plots2():
+           x_axis=["0-1","2-3","4-5","6-7","8-9","10-11","12-13","14-15","16-17","18-19","20-21","22-23"]
+           b1=d1.get()
+           b2=d2.get()
+           b3=d3.get()
+           b4=d4.get()
+           b5=d5.get()
+           b6=d6.get()
+           b7=d7.get()
+           b8=d8.get()
+           b9=d9.get()
+           b10=d10.get()
+           b11=d11.get()
+           b12=d12.get()
+           y2_axis=[b1,b2,b3,b4,b5,b6,b7,b8,b9,b10,b11,b12]
+           plt.plot(x_axis,y2_axis, color='black', marker='x')
+           plt.xlabel('Pressure, Bar')
+           plt.ylabel('Secondary Fan Damper, %')
+           plt.show()
+
+
+       boil=LabelFrame(label1,text="",font=("Arial Black",12),relief=GROOVE,bd=10,bg='gray22',fg="#6C3483")
+       boil.place(x=1650,y=100,height=290,width=115)
+
+       boiler_ld1=LabelFrame(boil,text="",font=("Arial Black",12),relief=GROOVE,bd=10,bg='gray22',fg="#6C3483")
+       boiler_ld1.place(x=0,y=0,height=86,width=95)
+       boiler_ld2=LabelFrame(boil,text="",font=("Arial Black",12),relief=GROOVE,bd=10,bg='gray22',fg="#6C3483")
+       boiler_ld2.place(x=0,y=90,height=86,width=95)
+       boiler_ld3=LabelFrame(boil,text="",font=("Arial Black",12),relief=GROOVE,bd=10,bg='gray22',fg="#6C3483")
+       boiler_ld3.place(x=0,y=180,height=86,width=95)
+       Button(boiler_ld1,text="PlotA",font=("Arial Black",15),pady=10,bg="gray8",fg="white",command=plots).grid(row=150,column=10,padx=0)
+       Button(boiler_ld2,text="PlotB",font=("Arial Black",15),pady=10,bg="gray8",fg="white",command=plots1).grid(row=150,column=10,padx=0,pady=0)
+       Button(boiler_ld3,text="PlotC",font=("Arial Black",15),pady=10,bg="gray8",fg="white",command=plots2).grid(row=150,column=10,padx=0,pady=0)
+
+class Thermo(Frame):
+   def __init__(self,*args,**kwargs):
+       Frame.__init__(self,*args,**kwargs)
+       self.A1=DoubleVar()
+       self.A2=DoubleVar()
+       self.A3=DoubleVar()
+       self.A4=DoubleVar()
+       self.A5=DoubleVar()      
+       self.A6=IntVar()
+       self.A7=IntVar()
+       self.A8=IntVar()
+       self.A9=IntVar()
+       self.A10=IntVar()
+       self.A11=IntVar()
+       self.A12=IntVar()
+       self.A13=IntVar()
+       self.A14=IntVar()
+       self.A15=IntVar()
+       self.A16=IntVar()
+       self.A17=IntVar()
+       self.A18=IntVar()
+       self.A19=IntVar()
+
+       Water_title = Label(self, text="Steam Analysis",bd=12,relief=GROOVE,font=("Arial Black",20),bg='gray22',fg='white').pack(fill=X)
+       water_flow = LabelFrame(self,text="",bd=12,relief=GROOVE,font=("Times New Roman",20),bg="gray22",fg="white")
+       water_flow.place(x=0,y=70,relwidth=1,relheight=0.7)
+
+       sub1 = LabelFrame(water_flow,text="Steam/Water Flow",bd=12,relief=GROOVE,font=("Times New Roman",20),bg="gray22",fg="white")
+       sub1.place(x=50,y=70,relwidth=0.25,relheight=0.7)
+
+       P='gray22'
+       W='white'
+       it1=Label(sub1,text="Water Flow Rate",font=("Arial Black",11),bg="gray22",fg="white").grid(row=0,column=0,pady=11)
+       it1_entry=Entry(sub1,borderwidth=2,width=15,textvariable=self.A1).grid(row=0,column=1,padx=10)
+
+       it2=Label(sub1,text="Water Flow Totalizer",font=("Arial Black",11),bg="gray22",fg="white").grid(row=1,column=0,pady=11)
+       it2_entry=Entry(sub1,borderwidth=2,width=15,textvariable=self.A2).grid(row=1,column=1,padx=10)
+
+       it3=Label(sub1,text="Steam Flow rate",font=("Arial Black",11),bg="gray22",fg="white").grid(row=2,column=0,pady=11)
+       item3_entry=Entry(sub1,borderwidth=2,width=15,textvariable=self.A3).grid(row=2,column=1,padx=10)
+
+       it4=Label(sub1,text="Steam Flow Totalizer",font=("Arial Black",11),bg="gray22",fg="white").grid(row=3,column=0,pady=11)
+       item4_entry=Entry(sub1,borderwidth=2,width=15,textvariable=self.A4).grid(row=3,column=1,padx=10)
+
+       it5=Label(sub1,text="Low Pressure Alarm",font=("Arial Black",11),bg="gray22",fg="white").grid(row=4,column=0,pady=11)
+       it5_entry=Entry(sub1,borderwidth=2,width=15,textvariable=self.A5).grid(row=4,column=1,padx=10)
+
+       it9=Label(sub1,text="Steam Drum Pressure",font=("Arial Black",11),bg="gray22",fg="white").grid(row=5,column=0,pady=11)
+       it9_entry=Entry(sub1,borderwidth=2,width=15,textvariable=self.A6).grid(row=5,column=1,padx=10)
+
+       it10=Label(sub1,text="Boiler Furnace Pressure",font=("Arial Black",11),bg="gray22",fg="white").grid(row=6,column=0,pady=11)
+       it10_entry=Entry(sub1,borderwidth=2,width=15,textvariable=self.A7).grid(row=6,column=1,padx=10)
+
+       it11=Label(sub1,text="Boiler Furnace Temperature",font=("Arial Black",11),bg="gray22",fg="white").grid(row=7,column=0,pady=11)
+       it11_entry=Entry(sub1,borderwidth=2,width=15,textvariable=self.A8).grid(row=7,column=1,padx=10)
+
+       it13=Label(sub1,text="Main Steam Drum Temperature",font=("Arial Black",11),bg="gray22",fg="white").grid(row=8,column=0,pady=11)
+       it13_entry=Entry(sub1,borderwidth=2,width=15,textvariable=self.A9).grid(row=8,column=1,padx=10)
+
+       sub2 = LabelFrame(water_flow,text="Stoker Speed Control",bd=12,relief=GROOVE,font=("Times New Roman",20),bg="gray22",fg="white")
+       sub2.place(x=550,y=70,relwidth=0.20,relheight=0.3)
+
+       s1=Label(sub2,text="Stoker 1 speed",font=("Arial Black",11),bg="gray22",fg="white").grid(row=0,column=0,pady=11,padx=30)
+       s1_entry=Entry(sub2,borderwidth=2,width=15,textvariable=self.A10).grid(row=0,column=1,padx=10)
+
+       s2=Label(sub2,text="Stoker 2 speed",font=("Arial Black",11),bg="gray22",fg="white").grid(row=9,column=0,pady=11,padx=30)
+       s2_entry=Entry(sub2,borderwidth=2,width=15,textvariable=self.A11).grid(row=9,column=1,padx=10)
+
+       ss2 = LabelFrame(sub2,text="Stoker 1",bd=12,relief=GROOVE,font=("Times New Roman",14),bg="gray22",fg="white")
+       ss2.place(x=10,y=100,relwidth=0.47,relheight=0.41)
+
+       ss3 = LabelFrame(sub2,text="Stoker 2",bd=12,relief=GROOVE,font=("Times New Roman",14),bg="gray22",fg="white")
+       ss3.place(x=180,y=100,relwidth=0.47,relheight=0.41)
+
+       b2=Button(ss2,text="STOP",font=("Arial Black",12),pady=0.3,padx=0.5,bg="gray8",fg="white",command=0).grid(row=0,column=0)
+       b3=Button(ss2,text="START",font=("Arial Black",12),pady=0.3,padx=0.5,bg="gray8",fg="white",command=0).grid(row=0,column=1)
+       b4=Button(ss3,text="STOP",font=("Arial Black",12),pady=0.3,padx=0.5,bg="gray8",fg="white",command=0).grid(row=0,column=0)
+       b5=Button(ss3,text="START",font=("Arial Black",12),pady=0.3,padx=0.5,bg="gray8",fg="white",command=0).grid(row=0,column=1)
+
+       a1 = LabelFrame(water_flow,text="Alarm Setting",bd=12,relief=GROOVE,font=("Times New Roman",20),bg="gray22",fg="white")
+       a1.place(x=550,y=360,relwidth=0.20,relheight=0.3)
+
+       a2=Label(a1,text="Low Pressure Alarm",font=("Arial Black",11),bg="gray22",fg="white").grid(row=0,column=0,pady=11,padx=30)
+       a2_entry=Entry(a1,borderwidth=2,width=15,textvariable=self.A12).grid(row=0,column=1,padx=10)
+
+       a3=Label(a1,text="High Pressure Alarm",font=("Arial Black",11),bg="gray22",fg="white").grid(row=9,column=0,pady=11,padx=30)
+       a3_entry=Entry(a1,borderwidth=2,width=15,textvariable=self.A13).grid(row=9,column=1,padx=10)
+
+       a4 = LabelFrame(a1,text="Low Level Alarm",bd=12,relief=GROOVE,font=("Times New Roman",14),bg="gray22",fg="white")
+       a4.place(x=10,y=100,relwidth=0.48,relheight=0.41)
+
+       a5 = LabelFrame(a1,text="High Level Alarm",bd=12,relief=GROOVE,font=("Times New Roman",14),bg="gray22",fg="white")
+       a5.place(x=183,y=100,relwidth=0.48,relheight=0.41)
+
+       bn1 = LabelFrame(water_flow,text="Boiler Smoke ",bd=12,relief=GROOVE,font=("Times New Roman",20),bg="gray22",fg="white")
+       bn1.place(x=950,y=70,relwidth=0.20,relheight=0.7)
+
+       b1=Label(bn1,text="ID Damper",font=("Arial Black",11),bg="gray22",fg="white").grid(row=0,column=0,pady=11,padx=30)
+       b1_entry=Entry(bn1,borderwidth=2,width=15,textvariable=self.A14).grid(row=0,column=1,padx=10)
+
+       b2=Label(bn1,text="Primary Fan Damper",font=("Arial Black",11),bg="gray22",fg="white").grid(row=2,column=0,pady=11,padx=30)
+       b2_entry=Entry(bn1,borderwidth=2,width=15,textvariable=self.A15).grid(row=2,column=1,padx=10)
+
+       b3=Label(bn1,text="Sec Fan Damper",font=("Arial Black",11),bg="gray22",fg="white").grid(row=3,column=0,pady=11,padx=30)
+       b3_entry=Entry(bn1,borderwidth=2,width=15,textvariable=self.A16).grid(row=3,column=1,padx=10)
+
+       b4=Label(bn1,text="Smoke Density",font=("Arial Black",11),bg="gray22",fg="white").grid(row=4,column=0,pady=11,padx=30)
+       b4_entry=Entry(bn1,borderwidth=2,width=15,textvariable=self.A17).grid(row=4,column=1,padx=10)
+
+       b5=Label(bn1,text="Flue Gas Temp",font=("Arial Black",11),bg="gray22",fg="white").grid(row=5,column=0,pady=11,padx=30)
+       b5_entry=Entry(bn1,borderwidth=2,width=15,textvariable=self.A18).grid(row=5,column=1,padx=10)
+
+       b6=Label(bn1,text="Pressure Alarm",font=("Arial Black",11),bg="gray22",fg="white").grid(row=6,column=0,pady=11,padx=30)
+       b6_entry=Entry(bn1,borderwidth=2,width=15,textvariable=self.A19).grid(row=6,column=1,padx=10)
+
+       b2=Button(a4,text="MUTE",font=("Arial Black",12),pady=0.3,padx=0.5,bg="gray8",fg="white",command=0).grid(row=0,column=0)
+       b3=Button(a4,text="ON/OFF",font=("Arial Black",12),pady=0.3,padx=0.5,bg="gray8",fg="white",command=0).grid(row=0,column=1)
+       b4=Button(a5,text="MUTE",font=("Arial Black",12),pady=0.3,padx=0.5,bg="gray8",fg="white",command=0).grid(row=0,column=0)
+       b5=Button(a5,text="ON/OFF",font=("Arial Black",12),pady=0.3,padx=0.5,bg="gray8",fg="white",command=0).grid(row=0,column=1)
+
+
+       eve=Frame(water_flow,bd=10,relief=GROOVE,bg="gray8")
+       eve.place(x=1350,y=70,width=500,relheight=0.7)
+       bill_title=Label(eve,text="Parameter Value Display",font=("Arial Black",17),bd=7,relief=GROOVE,bg="gray8",fg="white").pack(fill=X)
+       scrol_y=Scrollbar(eve,orient=VERTICAL)
+       self.txtarea=Text(eve,yscrollcommand=scrol_y.set)
+       scrol_y.pack(side=RIGHT,fill=Y)
+       scrol_y.config(command=self.txtarea.yview)
+       self.txtarea.pack(fill=BOTH,expand=1)
+
+       boile=LabelFrame(water_flow,text="",font=("Arial Black",12),relief=GROOVE,bd=10,bg='gray22',fg="#6C3483")
+       boile.place(x=1550,y=600,height=85,width=130)
+       Button(boile,text="Evaluate",font=("Arial Black",15),pady=10,bg="gray8",fg="white",command=lambda:soju(self)).grid(row=150,column=10,padx=0)
+       cap(self)
+
+def soju(self):
+
+    self.q=self.A1.get()
+    self.w=self.A2.get()
+    self.e= self.A3.get()
+    self.r=self.A4.get()
+    self.t=self.A5.get()
+    self.y=self.A6.get()
+    self.u=self.A7.get()
+    self.i=self.A8.get()
+    self.o=self.A9.get()
+    self.p=self.A10.get()
+    self.a=self.A11.get()
+    self.s=self.A12.get()
+    self.d=self.A13.get()
+    self.f=self.A14.get()
+    self.g=self.A15.get()
+    self.h=self.A16.get()
+    self.j=self.A17.get()
+    self.k=self.A18.get()
+    self.l=self.A19.get()
+
+    if (self.A19.get() >25):
+        messagebox.showerror("Warning!!!!!" , "Boiler Pressure more than 25 Bar")
+    if (self.A10.get() >50 or self.A11.get() >50):
+        messagebox.showerror("Warning!!!!! ", "Stoker Speed Excess Limit")
+    fg1(self)
+
+
+def cap(self):
+    self.txtarea.delete(1.0,END)
+    self.txtarea.insert(END,"Steam Analysis Of Boiler")
+    self.txtarea.insert(END,"\n=============================================")
+    self.txtarea.insert(END,"\nThis area is used to monitor the pressure, \ntemperature and flow rates of steam and water")
+    self.txtarea.insert(END,"\n=============================================\n")
+
+def fg1(self):
+    cap(self)
+    self.txtarea.insert(END,f"Water Flow Rate,T/Hr:\t\t{self.q}\n")
+    self.txtarea.insert(END,f"------------------------------------\n")
+    self.txtarea.insert(END,f"Water Flow Totalizer,Ton:\t\t{self.w}\n") 
+    self.txtarea.insert(END,f"------------------------------------\n")
+    self.txtarea.insert(END,f"Steam Flow Rate,T/Hr:\t\t{self.e}\n") 
+    self.txtarea.insert(END,f"------------------------------------\n")
+    self.txtarea.insert(END,f"Steam Flow Totalizer,Ton:\t\t{self.r}\n") 
+    self.txtarea.insert(END,f"------------------------------------\n")
+    self.txtarea.insert(END,f"Steam Drum Pressure,Bar:\t\t{self.y}\n") 
+    self.txtarea.insert(END,f"------------------------------------\n")
+    self.txtarea.insert(END,f"Boiler Furnace Pressure,Bar:\t\t{self.u}\n") 
+    self.txtarea.insert(END,f"------------------------------------\n")
+    self.txtarea.insert(END,f"Boiler Furnace Temperature,℃:\t\t{self.i}\n") 
+    self.txtarea.insert(END,f"------------------------------------\n")
+    self.txtarea.insert(END,f"Main Steam Drum Temperature,℃:\t\t{self.o}\n") 
+    self.txtarea.insert(END,f"------------------------------------\n")
+    self.txtarea.insert(END,f"Stoker 1 speed,Hz:\t\t{self.p}\n") 
+    self.txtarea.insert(END,f"------------------------------------\n")
+    self.txtarea.insert(END,f"Stoker 2 speed,Hz:\t\t{self.a}\n") 
+    self.txtarea.insert(END,f"------------------------------------\n")
+    self.txtarea.insert(END,f"Low Pressure Alarm,Bar:\t\t{self.s}\n") 
+    self.txtarea.insert(END,f"------------------------------------\n")
+    self.txtarea.insert(END,f"High Pressure Alarm,Bar:\t\t{self.d}\n") 
+    self.txtarea.insert(END,f"------------------------------------\n")
+    self.txtarea.insert(END,f"ID Damper,%:\t\t{self.f}\n") 
+    self.txtarea.insert(END,f"------------------------------------\n")
+    self.txtarea.insert(END,f"Primary Fan Damper,%:\t\t{self.g}\n") 
+    self.txtarea.insert(END,f"------------------------------------\n")
+    self.txtarea.insert(END,f"Secondary Fan Damper,%:\t\t{self.h}\n") 
+    self.txtarea.insert(END,f"------------------------------------\n")
+    self.txtarea.insert(END,f"Smoke Density,%:\t\t{self.j}\n") 
+    self.txtarea.insert(END,f"------------------------------------\n")
+    self.txtarea.insert(END,f"Flue Gas Temperature,℃:\t\t{self.k}\n") 
+    self.txtarea.insert(END,f"------------------------------------\n")
+
+myapp = boiler_app()
+myapp.mainloop()
